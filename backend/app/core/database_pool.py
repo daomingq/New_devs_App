@@ -15,7 +15,11 @@ class DatabasePool:
         """Initialize database connection pool"""
         try:
             # Create async engine with connection pooling
-            database_url = f"postgresql+asyncpg://{settings.supabase_db_user}:{settings.supabase_db_password}@{settings.supabase_db_host}:{settings.supabase_db_port}/{settings.supabase_db_name}"
+            # Use the database_url from settings
+            database_url = settings.database_url
+            # Replace postgresql:// with postgresql+asyncpg:// for async connections
+            if database_url.startswith("postgresql://"):
+                database_url = database_url.replace("postgresql://", "postgresql+asyncpg://")
             
             self.engine = create_async_engine(
                 database_url,
